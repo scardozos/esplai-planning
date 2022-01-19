@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/scardozos/esplai-planning/models"
 )
@@ -9,7 +10,11 @@ import (
 func main() {
 	// Teatre | Parc Central |  Pista    | Plaça | Passarel·la
 	// Aneto  |  Pedraforca	 | Matagalls | Cadí  | Puigmal
-
+	const (
+		startYear  = 2022
+		startMonth = 1
+		startDay   = 17
+	)
 	// Initialize places
 	passarela := &models.Place{Name: "Pasarel·la", Next: nil}
 	plaza := &models.Place{Name: "Plaça", Next: passarela}
@@ -24,7 +29,6 @@ func main() {
 	mtg := &models.Group{Name: "Matagalls", Place: pista}
 	cdi := &models.Group{Name: "Cadí", Place: plaza}
 	pgm := &models.Group{Name: "Puigmal", Place: passarela}
-
 	groups := models.GroupsList{GroupsList: []*models.Group{ant, pdf, mtg, cdi, pgm}}
 
 	/**
@@ -35,10 +39,16 @@ func main() {
 
 	fmt.Println("Initial state:")
 	ShowGroupsPlaces(groups)
-	fmt.Println("Iterations:")
-	IterateNextWeeks(20, groups)
-	// ShowGroupsPlaces(newGroups)
 
+	//res := CalcWeekNum([]int{2022, 1, 17})
+
+	startDate := models.DateTime{Year: startYear, Month: startMonth, Day: startDay}
+	endDate := models.DateTime{Year: 2022, Month: 1, Day: 24}
+	weekNum := CalcWeekNum(startDate.ToTime(), endDate.ToTime())
+
+	newGroups := IterateNextWeeks(weekNum, groups)
+	fmt.Println("New state:")
+	ShowGroupsPlaces(newGroups)
 }
 
 func ShowGroupsPlaces(groups models.GroupsList) {
@@ -52,9 +62,21 @@ func IterateNextWeeks(weeks int, groups models.GroupsList) models.GroupsList {
 	for i := 0; i < weeks; i++ {
 		groups.NextIteration()
 
-		// For debugging. TODO: Comment out
+		// For debugging
+		/**
 		fmt.Printf("Iteration number %02d\n", i+1)
 		ShowGroupsPlaces(groups)
+		**/
 	}
 	return groups
+}
+
+func CalcWeekNum(startDateTime time.Time, endDateTime time.Time) int {
+
+	//t2 := time.Now().UTC()
+	//t2 := time.Date(2022, time.Month(1), 31, 1, 0, 0, 0, time.UTC)
+	days := endDateTime.Sub(startDateTime).Hours() / 24
+	weeks := int(days / 7)
+
+	return weeks
 }
