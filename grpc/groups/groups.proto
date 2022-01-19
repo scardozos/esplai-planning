@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package groups;
+option go_package = "github.com/scardozos/esplai-planning/grpc/groups/;groups";
+
+service Groups {
+    rpc GetGroupPlaces (DateRequest) returns (GroupsPlacesResponse);
+} 
+
+message DateRequest {
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+} 
+
+message Place {
+    string place_name = 1;
+}
+
+message Group {
+    string group_name = 1;
+    Place group_place = 2;
+}
+
+message GroupsPlacesResponse {
+    repeated Group groups = 1; 
+}

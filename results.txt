@@ -1,0 +1,21 @@
+2022/01/19 22:38:58 Getting state for January 17 2022
+2022/01/19 22:38:58 Got response from server:
+2022/01/19 22:38:58 Aneto va a Teatre
+2022/01/19 22:38:58 Pedraforca va a Parc Central
+2022/01/19 22:38:58 Matagalls va a Pista
+2022/01/19 22:38:58 Cadí va a Plaça
+2022/01/19 22:38:58 Puigmal va a Pasarel·la
+2022/01/19 22:38:58 Getting state for January 24 2022
+2022/01/19 22:38:58 Got response from server:
+2022/01/19 22:38:58 Aneto va a Parc Central
+2022/01/19 22:38:58 Pedraforca va a Pista
+2022/01/19 22:38:58 Matagalls va a Plaça
+2022/01/19 22:38:58 Cadí va a Pasarel·la
+2022/01/19 22:38:58 Puigmal va a Teatre
+2022/01/19 22:38:58 Getting state for January 31 2022
+2022/01/19 22:38:58 Got response from server:
+2022/01/19 22:38:58 Aneto va a Pista
+2022/01/19 22:38:58 Pedraforca va a Plaça
+2022/01/19 22:38:58 Matagalls va a Pasarel·la
+2022/01/19 22:38:58 Cadí va a Teatre
+2022/01/19 22:38:58 Puigmal va a Parc Central

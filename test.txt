@@ -1,0 +1,150 @@
+Initial state:
+Aneto - Teatre
+Pedraforca - Parc Central
+Matagalls - Pista
+Cadí - Plaça
+Puigmal - Pasarel·la
+--------------------------
+Iterations:
+Iteration number 01
+Aneto - Parc Central
+Pedraforca - Pista
+Matagalls - Plaça
+Cadí - Pasarel·la
+Puigmal - Teatre
+--------------------------
+Iteration number 02
+Aneto - Pista
+Pedraforca - Plaça
+Matagalls - Pasarel·la
+Cadí - Teatre
+Puigmal - Parc Central
+--------------------------
+Iteration number 03
+Aneto - Plaça
+Pedraforca - Pasarel·la
+Matagalls - Teatre
+Cadí - Parc Central
+Puigmal - Pista
+--------------------------
+Iteration number 04
+Aneto - Pasarel·la
+Pedraforca - Teatre
+Matagalls - Parc Central
+Cadí - Pista
+Puigmal - Plaça
+--------------------------
+Iteration number 05
+Aneto - Teatre
+Pedraforca - Parc Central
+Matagalls - Pista
+Cadí - Plaça
+Puigmal - Pasarel·la
+--------------------------
+Iteration number 06
+Aneto - Parc Central
+Pedraforca - Pista
+Matagalls - Plaça
+Cadí - Pasarel·la
+Puigmal - Teatre
+--------------------------
+Iteration number 07
+Aneto - Pista
+Pedraforca - Plaça
+Matagalls - Pasarel·la
+Cadí - Teatre
+Puigmal - Parc Central
+--------------------------
+Iteration number 08
+Aneto - Plaça
+Pedraforca - Pasarel·la
+Matagalls - Teatre
+Cadí - Parc Central
+Puigmal - Pista
+--------------------------
+Iteration number 09
+Aneto - Pasarel·la
+Pedraforca - Teatre
+Matagalls - Parc Central
+Cadí - Pista
+Puigmal - Plaça
+--------------------------
+Iteration number 10
+Aneto - Teatre
+Pedraforca - Parc Central
+Matagalls - Pista
+Cadí - Plaça
+Puigmal - Pasarel·la
+--------------------------
+Iteration number 11
+Aneto - Parc Central
+Pedraforca - Pista
+Matagalls - Plaça
+Cadí - Pasarel·la
+Puigmal - Teatre
+--------------------------
+Iteration number 12
+Aneto - Pista
+Pedraforca - Plaça
+Matagalls - Pasarel·la
+Cadí - Teatre
+Puigmal - Parc Central
+--------------------------
+Iteration number 13
+Aneto - Plaça
+Pedraforca - Pasarel·la
+Matagalls - Teatre
+Cadí - Parc Central
+Puigmal - Pista
+--------------------------
+Iteration number 14
+Aneto - Pasarel·la
+Pedraforca - Teatre
+Matagalls - Parc Central
+Cadí - Pista
+Puigmal - Plaça
+--------------------------
+Iteration number 15
+Aneto - Teatre
+Pedraforca - Parc Central
+Matagalls - Pista
+Cadí - Plaça
+Puigmal - Pasarel·la
+--------------------------
+Iteration number 16
+Aneto - Parc Central
+Pedraforca - Pista
+Matagalls - Plaça
+Cadí - Pasarel·la
+Puigmal - Teatre
+--------------------------
+Iteration number 17
+Aneto - Pista
+Pedraforca - Plaça
+Matagalls - Pasarel·la
+Cadí - Teatre
+Puigmal - Parc Central
+--------------------------
+Iteration number 18
+Aneto - Plaça
+Pedraforca - Pasarel·la
+Matagalls - Teatre
+Cadí - Parc Central
+Puigmal - Pista
+--------------------------
+Iteration number 19
+Aneto - Pasarel·la
+Pedraforca - Teatre
+Matagalls - Parc Central
+Cadí - Pista
+Puigmal - Plaça
+--------------------------
+Iteration number 20
+Aneto - Teatre
+Pedraforca - Parc Central
+Matagalls - Pista
+Cadí - Plaça
+Puigmal - Pasarel·la
+--------------------------
+2022 1 18
+1
