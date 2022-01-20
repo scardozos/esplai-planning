@@ -22,7 +22,8 @@ type GroupsServer struct {
 	pb.UnimplementedGroupsServer
 }
 
-func (s *GroupsServer) GetGroupPlaces(ctx context.Context, date *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
+func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
+	date := dateRequest.Date
 	log.Printf("Got new request for %v-%v-%v\n", date.Year, date.Month, date.Day)
 	startDate := models.DateTime{Year: startYear, Month: startMonth, Day: startDay}
 	endDate := models.DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
@@ -31,7 +32,7 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, date *pb.DateRequest)
 	groups := GetInitialState()
 
 	futureGroups := IterateNextWeeks(weekNum, groups)
-	futureGroupsApiModel := LocalGroupModelToApi(futureGroups)
+	futureGroupsApiModel := LocalGroupModelToApi(futureGroups, date)
 	return &pb.GroupsPlacesResponse{
 		Groups: futureGroupsApiModel,
 	}, nil
@@ -91,7 +92,7 @@ func GetInitialState() models.GroupsList {
 }
 
 // Translates local group logic declarations to protobuf format
-func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
+func LocalGroupModelToApi(groups models.GroupsList, date *pb.Date) []*pb.Group {
 	var groupApiModel = make([]*pb.Group, len(groups.GroupsList))
 	for index, group := range groups.GroupsList {
 		groupApiModel[index] = &pb.Group{
@@ -99,6 +100,7 @@ func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
 			GroupPlace: &pb.Place{
 				PlaceName: group.Place.Name,
 			},
+			DateRequested: date,
 		}
 	}
 	//log.Println(groupApiModel)
