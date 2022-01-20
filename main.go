@@ -69,15 +69,25 @@ func GetInitialState() models.GroupsList {
 	teatre := &models.Place{Name: "Teatre", Next: parcCentral}
 	passarela.Next = teatre
 
-	// Start groups and assign places
+	/**
 	ant := &models.Group{Name: "Aneto", Place: teatre}
 	pdf := &models.Group{Name: "Pedraforca", Place: parcCentral}
 	mtg := &models.Group{Name: "Matagalls", Place: pista}
 	cdi := &models.Group{Name: "Cadí", Place: plaza}
 	pgm := &models.Group{Name: "Puigmal", Place: passarela}
 	groups := models.GroupsList{GroupsList: []*models.Group{ant, pdf, mtg, cdi, pgm}}
-
 	return groups
+	**/
+	// Start groups and assign places
+	return models.GroupsList{
+		GroupsList: []*models.Group{
+			{Name: "Aneto", Place: teatre},
+			{Name: "Pedraforca", Place: parcCentral},
+			{Name: "Matagalls", Place: pista},
+			{Name: "Cadí", Place: plaza},
+			{Name: "Puigmal", Place: passarela},
+		},
+	}
 }
 
 // Translates local group logic declarations to protobuf format
