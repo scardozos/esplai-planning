@@ -22,7 +22,8 @@ type GroupsServer struct {
 	pb.UnimplementedGroupsServer
 }
 
-func (s *GroupsServer) GetGroupPlaces(ctx context.Context, date *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
+func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
+	date := dateRequest.Date
 	log.Printf("Got new request for %v-%v-%v\n", date.Year, date.Month, date.Day)
 	startDate := models.DateTime{Year: startYear, Month: startMonth, Day: startDay}
 	endDate := models.DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
@@ -31,7 +32,7 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, date *pb.DateRequest)
 	groups := GetInitialState()
 
 	futureGroups := IterateNextWeeks(weekNum, groups)
-	futureGroupsApiModel := LocalGroupModelToApi(futureGroups)
+	futureGroupsApiModel := LocalGroupModelToApi(futureGroups, date)
 	return &pb.GroupsPlacesResponse{
 		Groups: futureGroupsApiModel,
 	}, nil
@@ -69,19 +70,29 @@ func GetInitialState() models.GroupsList {
 	teatre := &models.Place{Name: "Teatre", Next: parcCentral}
 	passarela.Next = teatre
 
-	// Start groups and assign places
+	/**
 	ant := &models.Group{Name: "Aneto", Place: teatre}
 	pdf := &models.Group{Name: "Pedraforca", Place: parcCentral}
 	mtg := &models.Group{Name: "Matagalls", Place: pista}
 	cdi := &models.Group{Name: "Cadí", Place: plaza}
 	pgm := &models.Group{Name: "Puigmal", Place: passarela}
 	groups := models.GroupsList{GroupsList: []*models.Group{ant, pdf, mtg, cdi, pgm}}
-
 	return groups
+	**/
+	// Start groups and assign places
+	return models.GroupsList{
+		GroupsList: []*models.Group{
+			{Name: "Aneto", Place: teatre},
+			{Name: "Pedraforca", Place: parcCentral},
+			{Name: "Matagalls", Place: pista},
+			{Name: "Cadí", Place: plaza},
+			{Name: "Puigmal", Place: passarela},
+		},
+	}
 }
 
 // Translates local group logic declarations to protobuf format
-func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
+func LocalGroupModelToApi(groups models.GroupsList, date *pb.Date) []*pb.Group {
 	var groupApiModel = make([]*pb.Group, len(groups.GroupsList))
 	for index, group := range groups.GroupsList {
 		groupApiModel[index] = &pb.Group{
@@ -89,6 +100,7 @@ func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
 			GroupPlace: &pb.Place{
 				PlaceName: group.Place.Name,
 			},
+			DateRequested: date,
 		}
 	}
 	//log.Println(groupApiModel)

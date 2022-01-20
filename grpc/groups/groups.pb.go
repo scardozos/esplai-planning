@@ -25,9 +25,7 @@ type DateRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Year  int32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
-	Month int32 `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
-	Day   int32 `protobuf:"varint,3,opt,name=day,proto3" json:"day,omitempty"`
+	Date *Date `protobuf:"bytes,1,opt,name=date,proto3" json:"date,omitempty"`
 }
 
 func (x *DateRequest) Reset() {
@@ -62,21 +60,70 @@ func (*DateRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DateRequest) GetYear() int32 {
+func (x *DateRequest) GetDate() *Date {
+	if x != nil {
+		return x.Date
+	}
+	return nil
+}
+
+type Date struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Year  int32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
+	Month int32 `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
+	Day   int32 `protobuf:"varint,3,opt,name=day,proto3" json:"day,omitempty"`
+}
+
+func (x *Date) Reset() {
+	*x = Date{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_grpc_groups_groups_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Date) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Date) ProtoMessage() {}
+
+func (x *Date) ProtoReflect() protoreflect.Message {
+	mi := &file_grpc_groups_groups_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Date.ProtoReflect.Descriptor instead.
+func (*Date) Descriptor() ([]byte, []int) {
+	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Date) GetYear() int32 {
 	if x != nil {
 		return x.Year
 	}
 	return 0
 }
 
-func (x *DateRequest) GetMonth() int32 {
+func (x *Date) GetMonth() int32 {
 	if x != nil {
 		return x.Month
 	}
 	return 0
 }
 
-func (x *DateRequest) GetDay() int32 {
+func (x *Date) GetDay() int32 {
 	if x != nil {
 		return x.Day
 	}
@@ -94,7 +141,7 @@ type Place struct {
 func (x *Place) Reset() {
 	*x = Place{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_grpc_groups_groups_proto_msgTypes[1]
+		mi := &file_grpc_groups_groups_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -107,7 +154,7 @@ func (x *Place) String() string {
 func (*Place) ProtoMessage() {}
 
 func (x *Place) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_groups_groups_proto_msgTypes[1]
+	mi := &file_grpc_groups_groups_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -120,7 +167,7 @@ func (x *Place) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Place.ProtoReflect.Descriptor instead.
 func (*Place) Descriptor() ([]byte, []int) {
-	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{1}
+	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Place) GetPlaceName() string {
@@ -135,14 +182,15 @@ type Group struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupName  string `protobuf:"bytes,1,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`
-	GroupPlace *Place `protobuf:"bytes,2,opt,name=group_place,json=groupPlace,proto3" json:"group_place,omitempty"`
+	GroupName     string `protobuf:"bytes,1,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`
+	GroupPlace    *Place `protobuf:"bytes,2,opt,name=group_place,json=groupPlace,proto3" json:"group_place,omitempty"`
+	DateRequested *Date  `protobuf:"bytes,3,opt,name=date_requested,json=dateRequested,proto3" json:"date_requested,omitempty"`
 }
 
 func (x *Group) Reset() {
 	*x = Group{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_grpc_groups_groups_proto_msgTypes[2]
+		mi := &file_grpc_groups_groups_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -155,7 +203,7 @@ func (x *Group) String() string {
 func (*Group) ProtoMessage() {}
 
 func (x *Group) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_groups_groups_proto_msgTypes[2]
+	mi := &file_grpc_groups_groups_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -168,7 +216,7 @@ func (x *Group) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Group.ProtoReflect.Descriptor instead.
 func (*Group) Descriptor() ([]byte, []int) {
-	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{2}
+	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Group) GetGroupName() string {
@@ -185,6 +233,13 @@ func (x *Group) GetGroupPlace() *Place {
 	return nil
 }
 
+func (x *Group) GetDateRequested() *Date {
+	if x != nil {
+		return x.DateRequested
+	}
+	return nil
+}
+
 type GroupsPlacesResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -196,7 +251,7 @@ type GroupsPlacesResponse struct {
 func (x *GroupsPlacesResponse) Reset() {
 	*x = GroupsPlacesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_grpc_groups_groups_proto_msgTypes[3]
+		mi := &file_grpc_groups_groups_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -209,7 +264,7 @@ func (x *GroupsPlacesResponse) String() string {
 func (*GroupsPlacesResponse) ProtoMessage() {}
 
 func (x *GroupsPlacesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_groups_groups_proto_msgTypes[3]
+	mi := &file_grpc_groups_groups_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -222,7 +277,7 @@ func (x *GroupsPlacesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupsPlacesResponse.ProtoReflect.Descriptor instead.
 func (*GroupsPlacesResponse) Descriptor() ([]byte, []int) {
-	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{3}
+	return file_grpc_groups_groups_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GroupsPlacesResponse) GetGroups() []*Group {
@@ -237,19 +292,25 @@ var File_grpc_groups_groups_proto protoreflect.FileDescriptor
 var file_grpc_groups_groups_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2f, 0x67, 0x72,
 	0x6f, 0x75, 0x70, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x67, 0x72, 0x6f, 0x75,
-	0x70, 0x73, 0x22, 0x49, 0x0a, 0x0b, 0x44, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x12, 0x10, 0x0a, 0x03, 0x64,
-	0x61, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x64, 0x61, 0x79, 0x22, 0x26, 0x0a,
-	0x05, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x5f,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x6c, 0x61, 0x63,
-	0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x56, 0x0a, 0x05, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x1d,
-	0x0a, 0x0a, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x09, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x2e, 0x0a,
-	0x0b, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2e, 0x50, 0x6c, 0x61, 0x63,
-	0x65, 0x52, 0x0a, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x22, 0x3d, 0x0a,
+	0x70, 0x73, 0x22, 0x2f, 0x0a, 0x0b, 0x44, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x20, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0c, 0x2e, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2e, 0x44, 0x61, 0x74, 0x65, 0x52, 0x04, 0x64,
+	0x61, 0x74, 0x65, 0x22, 0x42, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x79,
+	0x65, 0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12,
+	0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05,
+	0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x61, 0x79, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x03, 0x64, 0x61, 0x79, 0x22, 0x26, 0x0a, 0x05, 0x50, 0x6c, 0x61, 0x63, 0x65,
+	0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22,
+	0x8b, 0x01, 0x0a, 0x05, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x1d, 0x0a, 0x0a, 0x67, 0x72, 0x6f,
+	0x75, 0x70, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67,
+	0x72, 0x6f, 0x75, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x2e, 0x0a, 0x0b, 0x67, 0x72, 0x6f, 0x75,
+	0x70, 0x5f, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2e, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x52, 0x0a, 0x67, 0x72,
+	0x6f, 0x75, 0x70, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x12, 0x33, 0x0a, 0x0e, 0x64, 0x61, 0x74, 0x65,
+	0x5f, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0c, 0x2e, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2e, 0x44, 0x61, 0x74, 0x65, 0x52, 0x0d,
+	0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x65, 0x64, 0x22, 0x3d, 0x0a,
 	0x14, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x73, 0x52, 0x65, 0x73,
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x25, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18,
 	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x2e, 0x47,
@@ -277,23 +338,26 @@ func file_grpc_groups_groups_proto_rawDescGZIP() []byte {
 	return file_grpc_groups_groups_proto_rawDescData
 }
 
-var file_grpc_groups_groups_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_grpc_groups_groups_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_grpc_groups_groups_proto_goTypes = []interface{}{
 	(*DateRequest)(nil),          // 0: groups.DateRequest
-	(*Place)(nil),                // 1: groups.Place
-	(*Group)(nil),                // 2: groups.Group
-	(*GroupsPlacesResponse)(nil), // 3: groups.GroupsPlacesResponse
+	(*Date)(nil),                 // 1: groups.Date
+	(*Place)(nil),                // 2: groups.Place
+	(*Group)(nil),                // 3: groups.Group
+	(*GroupsPlacesResponse)(nil), // 4: groups.GroupsPlacesResponse
 }
 var file_grpc_groups_groups_proto_depIdxs = []int32{
-	1, // 0: groups.Group.group_place:type_name -> groups.Place
-	2, // 1: groups.GroupsPlacesResponse.groups:type_name -> groups.Group
-	0, // 2: groups.Groups.GetGroupPlaces:input_type -> groups.DateRequest
-	3, // 3: groups.Groups.GetGroupPlaces:output_type -> groups.GroupsPlacesResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 0: groups.DateRequest.date:type_name -> groups.Date
+	2, // 1: groups.Group.group_place:type_name -> groups.Place
+	1, // 2: groups.Group.date_requested:type_name -> groups.Date
+	3, // 3: groups.GroupsPlacesResponse.groups:type_name -> groups.Group
+	0, // 4: groups.Groups.GetGroupPlaces:input_type -> groups.DateRequest
+	4, // 5: groups.Groups.GetGroupPlaces:output_type -> groups.GroupsPlacesResponse
+	5, // [5:6] is the sub-list for method output_type
+	4, // [4:5] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_grpc_groups_groups_proto_init() }
@@ -315,7 +379,7 @@ func file_grpc_groups_groups_proto_init() {
 			}
 		}
 		file_grpc_groups_groups_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Place); i {
+			switch v := v.(*Date); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -327,7 +391,7 @@ func file_grpc_groups_groups_proto_init() {
 			}
 		}
 		file_grpc_groups_groups_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Group); i {
+			switch v := v.(*Place); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -339,6 +403,18 @@ func file_grpc_groups_groups_proto_init() {
 			}
 		}
 		file_grpc_groups_groups_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Group); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_grpc_groups_groups_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GroupsPlacesResponse); i {
 			case 0:
 				return &v.state
@@ -357,7 +433,7 @@ func file_grpc_groups_groups_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_grpc_groups_groups_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
