@@ -47,21 +47,19 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	}, nil
 }
 
-func newServer() *GroupsServer {
+func newGroupServer() *GroupsServer {
 	s := &GroupsServer{}
 	return s
 }
 
 func main() {
-
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterGroupsServer(grpcServer, newServer())
+	pb.RegisterGroupsServer(grpcServer, newGroupServer())
 	grpcServer.Serve(lis)
-
 }
 
 // Returns a slice with a list of groups and their places
