@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -40,11 +39,7 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	groups := InitialGroupState()
 
 	reqDateUnmarshaled := requestedDate.ToTime()
-	subSat := int(reqDateUnmarshaled.Weekday())
-	if reqDateUnmarshaled.Weekday() == 0 {
-		subSat = 7
-	}
-	saturday := reqDateUnmarshaled.AddDate(0, 0, 6-subSat)
+	saturday := ChangeWeekDay(reqDateUnmarshaled, time.Saturday)
 
 	futureGroups := IterateNextWeeks(iterNum, groups)
 	futureGroupsApiModel := MarshalGroupModel(futureGroups)
@@ -122,21 +117,11 @@ func IterateNextWeeks(weeks int, groups models.GroupsList) models.GroupsList {
 // Calculates number of weeks for which to know their respective state in the future
 // Takes into account startDate, the requested date and the list of days in which state won't change
 func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks []time.Time) int {
-	// Convert any non-Monday date to Monday
-	// This preserves state for the entire week, as if it were Monday
-	if reqWeekDay := int(requestedDate.Weekday()); reqWeekDay != 5 {
-		sub := reqWeekDay
-		if reqWeekDay == 0 {
-			sub = 7
-		}
-		requestedDate = requestedDate.AddDate(0, 0, 5-sub)
-	}
-	// Calculate number of weeks since startDate
-	fmt.Println(requestedDate.Weekday())
+	requestedDate = ChangeWeekDay(requestedDate, time.Monday)
+
 	days := requestedDate.Sub(startDate).Hours() / 24
 	weeks := int(days / 7)
 
-	// Compute total number of nonWeek occurrences since startDate, that happen before the requestedDate
 	var sub int
 	for _, time := range nonWeeks {
 		if time.After(startDate) && time.Before(requestedDate) {
@@ -144,4 +129,15 @@ func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks [
 		}
 	}
 	return weeks - sub
+}
+
+func ChangeWeekDay(from time.Time, to time.Weekday) time.Time {
+	if currentWeekDay := int(from.Weekday()); currentWeekDay != int(to) {
+		sub := currentWeekDay
+		if currentWeekDay == 0 {
+			sub = 7
+		}
+		return from.AddDate(0, 0, int(to)-sub)
+	}
+	return from
 }
