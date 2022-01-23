@@ -22,9 +22,9 @@ message Place {
 message Group {
     string group_name = 1;
     Place group_place = 2;
-    Date date_requested = 3;
 }
 
 message GroupsPlacesResponse {
     repeated Group groups = 1; 
+    Date date_requested = 2;
 }
