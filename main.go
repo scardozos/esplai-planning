@@ -29,6 +29,7 @@ type GroupsServer struct {
 	pb.UnimplementedGroupsServer
 }
 
+// TODO: Clean up this mess
 func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
 	date := dateRequest.Date
 	log.Printf("Got new request for %v-%v-%v\n", date.Year, date.Month, date.Day)
