@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -38,12 +39,19 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	iterNum := CalcWeekNumNoWeeks(startDate.ToTime(), requestedDate.ToTime(), nonWeeks)
 	groups := InitialGroupState()
 
+	reqDateUnmarshaled := requestedDate.ToTime()
+	subSat := int(reqDateUnmarshaled.Weekday())
+	if reqDateUnmarshaled.Weekday() == 0 {
+		subSat = 7
+	}
+	saturday := reqDateUnmarshaled.AddDate(0, 0, 6-subSat)
+
 	futureGroups := IterateNextWeeks(iterNum, groups)
 	futureGroupsApiModel := MarshalGroupModel(futureGroups)
 
 	return &pb.GroupsPlacesResponse{
-		Groups:        futureGroupsApiModel,
-		DateRequested: date,
+		Groups:            futureGroupsApiModel,
+		RequestedSaturday: &pb.Date{Year: int32(saturday.Year()), Month: int32(saturday.Month()), Day: int32(saturday.Day())},
 	}, nil
 }
 
@@ -124,6 +132,7 @@ func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks [
 		requestedDate = requestedDate.AddDate(0, 0, 5-sub)
 	}
 	// Calculate number of weeks since startDate
+	fmt.Println(requestedDate.Weekday())
 	days := requestedDate.Sub(startDate).Hours() / 24
 	weeks := int(days / 7)
 

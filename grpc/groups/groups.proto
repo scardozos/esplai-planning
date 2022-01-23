@@ -26,5 +26,5 @@ message Group {
 
 message GroupsPlacesResponse {
     repeated Group groups = 1; 
-    Date date_requested = 2;
+    Date requested_saturday = 2;
 }
