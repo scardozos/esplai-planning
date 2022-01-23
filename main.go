@@ -40,10 +40,11 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	groups := GetInitialState()
 
 	futureGroups := IterateNextWeeks(iterNum, groups)
-	futureGroupsApiModel := LocalGroupModelToApi(futureGroups, date)
+	futureGroupsApiModel := LocalGroupModelToApi(futureGroups)
 
 	return &pb.GroupsPlacesResponse{
-		Groups: futureGroupsApiModel,
+		Groups:        futureGroupsApiModel,
+		DateRequested: date,
 	}, nil
 }
 
@@ -91,7 +92,7 @@ func GetInitialState() models.GroupsList {
 }
 
 // Translates local group logic declarations to protobuf format
-func LocalGroupModelToApi(groups models.GroupsList, date *pb.Date) []*pb.Group {
+func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
 	var groupApiModel = make([]*pb.Group, len(groups.GroupsList))
 	for index, group := range groups.GroupsList {
 		groupApiModel[index] = &pb.Group{
@@ -99,7 +100,6 @@ func LocalGroupModelToApi(groups models.GroupsList, date *pb.Date) []*pb.Group {
 			GroupPlace: &pb.Place{
 				PlaceName: group.Place.Name,
 			},
-			DateRequested: date,
 		}
 	}
 	//log.Println(groupApiModel)
