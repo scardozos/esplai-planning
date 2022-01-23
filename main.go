@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -37,10 +36,10 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	requestedDate := models.DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
 
 	iterNum := CalcWeekNumNoWeeks(startDate.ToTime(), requestedDate.ToTime(), nonWeeks)
-	groups := GetInitialState()
+	groups := InitialGroupState()
 
 	futureGroups := IterateNextWeeks(iterNum, groups)
-	futureGroupsApiModel := LocalGroupModelToApi(futureGroups)
+	futureGroupsApiModel := MarshalGroupModel(futureGroups)
 
 	return &pb.GroupsPlacesResponse{
 		Groups:        futureGroupsApiModel,
@@ -70,7 +69,7 @@ func main() {
 // Teatre | Parc Central |  Pista    | Plaça | Passarel·la
 //   <-          <-           <-        <-         <-
 // Aneto  |  Pedraforca	 | Matagalls | Cadí  | Puigmal
-func GetInitialState() models.GroupsList {
+func InitialGroupState() models.GroupsList {
 	// Initialize places
 	passarela := &models.Place{Name: "Pasarel·la", Next: nil}
 	plaza := &models.Place{Name: "Plaça", Next: passarela}
@@ -92,7 +91,7 @@ func GetInitialState() models.GroupsList {
 }
 
 // Translates local group logic declarations to protobuf format
-func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
+func MarshalGroupModel(groups models.GroupsList) []*pb.Group {
 	var groupApiModel = make([]*pb.Group, len(groups.GroupsList))
 	for index, group := range groups.GroupsList {
 		groupApiModel[index] = &pb.Group{
@@ -106,34 +105,12 @@ func LocalGroupModelToApi(groups models.GroupsList) []*pb.Group {
 	return groupApiModel
 }
 
-// Prints the groups and their respective place
-func ShowGroupsPlaces(groups models.GroupsList) {
-	for _, group := range groups.GroupsList {
-		fmt.Printf("%v - %v\n", group.Name, group.Place.Name)
-	}
-	fmt.Println("--------------------------")
-}
-
 // Gets the state for x total number of weeks, taking into account the groups
 func IterateNextWeeks(weeks int, groups models.GroupsList) models.GroupsList {
 	for i := 0; i < weeks; i++ {
 		groups.NextIteration()
-
-		// For debugging purposes
-		/**
-		fmt.Printf("Iteration number %02d\n", i+1)
-		ShowGroupsPlaces(groups)
-		**/
 	}
 	return groups
-}
-
-// Deprecated: Calculates number of weeks for which to know their respective state in the future
-func CalcWeekNum(startDateTime time.Time, endDateTime time.Time) int {
-	days := endDateTime.Sub(startDateTime).Hours() / 24
-	weeks := int(days / 7)
-
-	return weeks
 }
 
 // Calculates number of weeks for which to know their respective state in the future
