@@ -29,6 +29,7 @@ type GroupsServer struct {
 	pb.UnimplementedGroupsServer
 }
 
+// TODO: Clean up this mess
 func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
 	date := dateRequest.Date
 	log.Printf("Got new request for %v-%v-%v\n", date.Year, date.Month, date.Day)
@@ -38,30 +39,31 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	iterNum := CalcWeekNumNoWeeks(startDate.ToTime(), requestedDate.ToTime(), nonWeeks)
 	groups := InitialGroupState()
 
+	reqDateUnmarshaled := requestedDate.ToTime()
+	saturday := ChangeWeekDay(reqDateUnmarshaled, time.Saturday)
+
 	futureGroups := IterateNextWeeks(iterNum, groups)
 	futureGroupsApiModel := MarshalGroupModel(futureGroups)
 
 	return &pb.GroupsPlacesResponse{
-		Groups:        futureGroupsApiModel,
-		DateRequested: date,
+		Groups:            futureGroupsApiModel,
+		RequestedSaturday: &pb.Date{Year: int32(saturday.Year()), Month: int32(saturday.Month()), Day: int32(saturday.Day())},
 	}, nil
 }
 
-func newServer() *GroupsServer {
+func newGroupServer() *GroupsServer {
 	s := &GroupsServer{}
 	return s
 }
 
 func main() {
-
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterGroupsServer(grpcServer, newServer())
+	pb.RegisterGroupsServer(grpcServer, newGroupServer())
 	grpcServer.Serve(lis)
-
 }
 
 // Returns a slice with a list of groups and their places
@@ -116,20 +118,11 @@ func IterateNextWeeks(weeks int, groups models.GroupsList) models.GroupsList {
 // Calculates number of weeks for which to know their respective state in the future
 // Takes into account startDate, the requested date and the list of days in which state won't change
 func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks []time.Time) int {
-	// Convert any non-Monday date to Monday
-	// This preserves state for the entire week, as if it were Monday
-	if reqWeekDay := int(requestedDate.Weekday()); reqWeekDay != 5 {
-		sub := reqWeekDay
-		if reqWeekDay == 0 {
-			sub = 7
-		}
-		requestedDate = requestedDate.AddDate(0, 0, 5-sub)
-	}
-	// Calculate number of weeks since startDate
+	requestedDate = ChangeWeekDay(requestedDate, time.Monday)
+
 	days := requestedDate.Sub(startDate).Hours() / 24
 	weeks := int(days / 7)
 
-	// Compute total number of nonWeek occurrences since startDate, that happen before the requestedDate
 	var sub int
 	for _, time := range nonWeeks {
 		if time.After(startDate) && time.Before(requestedDate) {
@@ -137,4 +130,15 @@ func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks [
 		}
 	}
 	return weeks - sub
+}
+
+func ChangeWeekDay(from time.Time, to time.Weekday) time.Time {
+	if currentWeekDay := int(from.Weekday()); currentWeekDay != int(to) {
+		sub := currentWeekDay
+		if currentWeekDay == 0 {
+			sub = 7
+		}
+		return from.AddDate(0, 0, int(to)-sub)
+	}
+	return from
 }
