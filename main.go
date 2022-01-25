@@ -6,9 +6,11 @@ import (
 	"net"
 	"time"
 
+	wh "github.com/scardozos/ep-weekhandler/grpc/dates"
 	pb "github.com/scardozos/esplai-planning/grpc/groups"
 	"github.com/scardozos/esplai-planning/models"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 const (
@@ -27,6 +29,16 @@ var nonWeeks = []time.Time{
 
 type GroupsServer struct {
 	pb.UnimplementedGroupsServer
+}
+
+func newGrpcClientContext(endpoint string) (*models.GrpcClientContext, error) {
+	datesConn, err := grpc.Dial(endpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.GrpcClientContext{DatesClient: wh.NewDatesClient(datesConn)}, nil
+
 }
 
 // TODO: Clean up this mess
@@ -57,6 +69,15 @@ func newGroupServer() *GroupsServer {
 }
 
 func main() {
+	// Client logic
+	clientCtx, err := newGrpcClientContext("localhost:9001")
+	if err != nil {
+		log.Fatal(err)
+	}
+	d := &models.GrpcClient{Context: clientCtx}
+	go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 22})
+
+	// Server logic
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -64,6 +85,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	pb.RegisterGroupsServer(grpcServer, newGroupServer())
 	grpcServer.Serve(lis)
+
 }
 
 // Returns a slice with a list of groups and their places
