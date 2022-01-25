@@ -75,7 +75,8 @@ func main() {
 		log.Fatal(err)
 	}
 	d := &models.GrpcClient{Context: clientCtx}
-	go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 22})
+	//go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 22})
+	d.GetNonWeeks()
 
 	// Server logic
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")

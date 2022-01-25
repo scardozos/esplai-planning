@@ -31,3 +31,16 @@ func (s *GrpcClient) AddStaticDate(req *DateTime) error {
 	log.Printf("Successfully added date %v - Took %v", res.SetWeek, then)
 	return nil
 }
+
+func (s *GrpcClient) GetNonWeeks() error {
+	c := s.Context.DatesClient
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	res, err := c.GetStaticWeeks(ctx, &wh.GetStaticWeeksRequest{})
+	if err != nil {
+		log.Printf("Error when executing GetStaticWeeks: %v", err)
+		return err
+	}
+	log.Printf("Got result from GetStaticWeeks:\n%v", res)
+	return nil
+}
