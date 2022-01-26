@@ -3,7 +3,7 @@ module github.com/scardozos/esplai-planning
 go 1.17
 
 require (
-	github.com/scardozos/ep-weekhandler v0.0.0-20220125004321-7615d321f1f1
+	github.com/scardozos/ep-weekhandler v0.0.0-20220126162630-bf6c43aeb3fa
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.25.0
 )

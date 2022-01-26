@@ -48,6 +48,8 @@ github.com/scardozos/ep-weekhandler v0.0.0-20220125003522-b52628c1cc22 h1:DWmxZd
 github.com/scardozos/ep-weekhandler v0.0.0-20220125003522-b52628c1cc22/go.mod h1:66/G6wQcp2d5S01cRvnrasOSZaf9X/7R2OZFKGODPDM=
 github.com/scardozos/ep-weekhandler v0.0.0-20220125004321-7615d321f1f1 h1:UGV10NKp0irHYqItYZ0c+N38pnSeQCp5eDfuCGXyNrk=
 github.com/scardozos/ep-weekhandler v0.0.0-20220125004321-7615d321f1f1/go.mod h1:66/G6wQcp2d5S01cRvnrasOSZaf9X/7R2OZFKGODPDM=
+github.com/scardozos/ep-weekhandler v0.0.0-20220126162630-bf6c43aeb3fa h1:WNnNNHqZeYzHPqbC/abm6ZvlRwOzotTYHBC0hKo9Src=
+github.com/scardozos/ep-weekhandler v0.0.0-20220126162630-bf6c43aeb3fa/go.mod h1:66/G6wQcp2d5S01cRvnrasOSZaf9X/7R2OZFKGODPDM=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

@@ -10,7 +10,9 @@ import (
 	pb "github.com/scardozos/esplai-planning/grpc/groups"
 	"github.com/scardozos/esplai-planning/models"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -20,14 +22,18 @@ const (
 )
 
 // TODO: Delegate the storage and retrieval of nonWeeks to another gRPC endpoint
+// TODO: ON IT!
 // Day must always be a saturday
+/*
 var nonWeeks = []time.Time{
 	(&models.DateTime{Year: 2022, Month: 1, Day: 22}).ToTime(),
 	(&models.DateTime{Year: 2022, Month: 2, Day: 5}).ToTime(),
 	(&models.DateTime{Year: 2022, Month: 3, Day: 19}).ToTime(),
 }
+*/
 
 type GroupsServer struct {
+	dbClient *models.GrpcClient
 	pb.UnimplementedGroupsServer
 }
 
@@ -48,6 +54,11 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	startDate := models.DateTime{Year: startYear, Month: startMonth, Day: startDay}
 	requestedDate := models.DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
 
+	nonWeeks, err := s.dbClient.GetNonWeeks()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "could not get static weeks: %v", err)
+	}
+
 	iterNum := CalcWeekNumNoWeeks(startDate.ToTime(), requestedDate.ToTime(), nonWeeks)
 	groups := InitialGroupState()
 
@@ -64,19 +75,27 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 }
 
 func newGroupServer() *GroupsServer {
-	s := &GroupsServer{}
-	return s
-}
-
-func main() {
 	// Client logic
 	clientCtx, err := newGrpcClientContext("localhost:9001")
 	if err != nil {
 		log.Fatal(err)
 	}
-	d := &models.GrpcClient{Context: clientCtx}
-	//go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 22})
-	d.GetNonWeeks()
+	db := &models.GrpcClient{Context: clientCtx}
+	return &GroupsServer{dbClient: db}
+}
+
+func main() {
+	/*
+		go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+		go d.GetNonWeeks()
+		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 22})
+		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 24})
+		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 25})
+		go d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	*/
+	//d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	//d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
 
 	// Server logic
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")
