@@ -21,8 +21,6 @@ const (
 	startDay   = 17
 )
 
-// TODO: Delegate the storage and retrieval of nonWeeks to another gRPC endpoint
-// TODO: ON IT!
 // Day must always be a saturday
 /*
 var nonWeeks = []time.Time{
@@ -75,7 +73,7 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 }
 
 func newGroupServer() *GroupsServer {
-	// Client logic
+	// Initialize database client config containing static weeks
 	clientCtx, err := newGrpcClientContext("localhost:9001")
 	if err != nil {
 		log.Fatal(err)
@@ -85,6 +83,7 @@ func newGroupServer() *GroupsServer {
 }
 
 func main() {
+	// Testing:
 	/*
 		go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
 		go d.GetNonWeeks()
@@ -160,20 +159,32 @@ func IterateNextWeeks(weeks int, groups models.GroupsList) models.GroupsList {
 // Calculates number of weeks for which to know their respective state in the future
 // Takes into account startDate, the requested date and the list of days in which state won't change
 func CalcWeekNumNoWeeks(startDate time.Time, requestedDate time.Time, nonWeeks []time.Time) int {
+	// Change requestedDate to that week's Monday in order to preserve state
 	requestedDate = ChangeWeekDay(requestedDate, time.Monday)
 
+	// Compute the amount of days from startDate
 	days := requestedDate.Sub(startDate).Hours() / 24
+	// Compute the amount of weeks from startDate
+	// taking into account the amount of days
 	weeks := int(days / 7)
 
+	// initialize sub var, which accounts for the total number
+	// of static weeks that have occurred after startDate
+	// and before the requestedDate
 	var sub int
 	for _, time := range nonWeeks {
 		if time.After(startDate) && time.Before(requestedDate) {
 			sub += 1
 		}
 	}
+
+	// returns the number of weeks that passed from startDate
+	// minus the amount of static weeks that passed in between
 	return weeks - sub
 }
 
+// Change week day "from" `Time.Time` to a given weekday "to" `time.Weekday`
+// Returns time.Time
 func ChangeWeekDay(from time.Time, to time.Weekday) time.Time {
 	if currentWeekDay := int(from.Weekday()); currentWeekDay != int(to) {
 		sub := currentWeekDay
