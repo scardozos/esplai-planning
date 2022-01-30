@@ -6,6 +6,7 @@ import (
 	"net"
 	"time"
 
+	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	wh "github.com/scardozos/ep-weekhandler/grpc/dates"
 	pb "github.com/scardozos/esplai-planning/grpc/groups"
 	"github.com/scardozos/esplai-planning/models"
@@ -36,7 +37,13 @@ type GroupsServer struct {
 }
 
 func newGrpcClientContext(endpoint string) (*models.GrpcClientContext, error) {
-	datesConn, err := grpc.Dial(endpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts := []grpc_retry.CallOption{
+		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(10 * time.Millisecond)),
+		grpc_retry.WithPerRetryTimeout(20 * time.Millisecond),
+	}
+	datesConn, err := grpc.Dial(endpoint, grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(grpc_retry.UnaryClientInterceptor(opts...)),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -83,18 +90,6 @@ func newGroupServer() *GroupsServer {
 }
 
 func main() {
-	// Testing:
-	/*
-		go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
-		go d.GetNonWeeks()
-		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 22})
-		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
-		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 24})
-		go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 25})
-		go d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
-	*/
-	//d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
-	//d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
 
 	// Server logic
 	lis, err := net.Listen("tcp", "0.0.0.0:9000")
@@ -102,7 +97,20 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterGroupsServer(grpcServer, newGroupServer())
+	groupServer := newGroupServer()
+	pb.RegisterGroupsServer(grpcServer, groupServer)
+
+	/* Testing:
+	d := groupServer.dbClient
+	go d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	go d.AddStaticDate(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 22})
+	go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 24})
+	go d.IsNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 25})
+	go d.UnsetNonWeek(&models.DateTime{Year: 2022, Month: 1, Day: 23})
+	*/
+
 	grpcServer.Serve(lis)
 
 }
