@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// TODO: IMPROVE DOCUMENTATION
 type GrpcClientContext struct {
 	DatesClient wh.DatesClient
 }

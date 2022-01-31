@@ -39,7 +39,7 @@ type GroupsServer struct {
 func newGrpcClientContext(endpoint string) (*models.GrpcClientContext, error) {
 	opts := []grpc_retry.CallOption{
 		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(10 * time.Millisecond)),
-		grpc_retry.WithPerRetryTimeout(20 * time.Millisecond),
+		grpc_retry.WithCodes(codes.Internal, codes.Unavailable),
 	}
 	datesConn, err := grpc.Dial(endpoint, grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(grpc_retry.UnaryClientInterceptor(opts...)),
@@ -52,7 +52,7 @@ func newGrpcClientContext(endpoint string) (*models.GrpcClientContext, error) {
 
 }
 
-// TODO: Clean up this mess
+// TODO: Refactor code
 func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateRequest) (*pb.GroupsPlacesResponse, error) {
 	date := dateRequest.Date
 	log.Printf("Got new request for %v-%v-%v\n", date.Year, date.Month, date.Day)
@@ -72,7 +72,6 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 
 	futureGroups := IterateNextWeeks(iterNum, groups)
 	futureGroupsApiModel := MarshalGroupModel(futureGroups)
-
 	return &pb.GroupsPlacesResponse{
 		Groups:            futureGroupsApiModel,
 		RequestedSaturday: &pb.Date{Year: int32(saturday.Year()), Month: int32(saturday.Month()), Day: int32(saturday.Day())},
