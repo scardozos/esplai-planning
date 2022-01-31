@@ -5,9 +5,12 @@ import (
 	"log"
 	"time"
 
+	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	wh "github.com/scardozos/ep-weekhandler/grpc/dates"
+	"google.golang.org/grpc"
 )
 
+// TODO: IMPROVE DOCUMENTATION
 type GrpcClientContext struct {
 	DatesClient wh.DatesClient
 }
@@ -25,19 +28,19 @@ func (s *GrpcClient) AddStaticDate(req *DateTime) error {
 	res, err := c.SetStaticWeek(ctx, &wh.SetStaticWeekRequest{StaticWeek: &wh.Date{Year: req.Year, Month: req.Month, Day: req.Day}})
 	then := time.Since(now)
 	if err != nil {
-		log.Printf("me cago en todo: %v", err)
+		log.Printf("error calling SetStaticWeek: %v", err)
 		return err
 	}
 	log.Printf("Successfully added date %v - Took %v", res.SetWeek, then)
 	return nil
 }
 
-func (s *GrpcClient) GetNonWeeks() ([]time.Time, error) {
+func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
 	c := s.Context.DatesClient
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	res, err := c.GetStaticWeeks(ctx, &wh.GetStaticWeeksRequest{})
+	res, err := c.GetStaticWeeks(ctx, &wh.GetStaticWeeksRequest{}, grpc_retry.WithMax(3))
 	if err != nil {
 		log.Printf("Error when executing GetStaticWeeks: %v", err)
 		return nil, err
@@ -48,6 +51,9 @@ func (s *GrpcClient) GetNonWeeks() ([]time.Time, error) {
 		retObj[i] = time.Date(int(e.Year), time.Month(e.Month), int(e.Day), 0, 0, 0, 0, time.UTC)
 	}
 
+	if len(retObj) == 0 {
+		log.Print("GetNonWeeks() returned 0 static weeks")
+	}
 	return retObj, nil
 }
 
