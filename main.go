@@ -1,18 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
 
 	pb "github.com/scardozos/esplai-planning/grpc/groups"
 	"github.com/scardozos/esplai-planning/models"
 	"google.golang.org/grpc"
 )
 
+var (
+	grpcServerAddr = os.Getenv("GRPC_SERVER_CLIENT_ADDR_SELF")
+	grpcServerPort = os.Getenv("GRPC_SERVER_CLIENT_PORT_SELF")
+)
+
 func main() {
 
 	// Server logic
-	lis, err := net.Listen("tcp", "0.0.0.0:9000")
+	lis, err := net.Listen("tcp", fmt.Sprintf("%v:%v", grpcServerAddr, grpcServerPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
