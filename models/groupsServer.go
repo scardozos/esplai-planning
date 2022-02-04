@@ -17,6 +17,16 @@ const (
 )
 
 type GroupsServer struct {
+	// caching NonWeeks allow for a great alleviation of incoming traffic towards dbServer (ep-weekhandler)
+	//
+	// Rationale
+	//
+	// NonWeeks will (should not) be changed regularly
+	// and should also fit in memory, for which caching allows for
+	// an improved backend performance
+	cachedNonWeeks []time.Time
+	// we declare dbClient for refreshing cachedNonWeeks
+	// TODO: Might add future option to disable caching
 	dbClient *GrpcClient
 	pb.UnimplementedGroupsServer
 }
@@ -28,9 +38,15 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	startDate := DateTime{Year: startYear, Month: startMonth, Day: startDay}
 	requestedDate := DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
 
-	nonWeeks, err := s.dbClient.GetNonWeeks()
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "could not get static weeks: %v", err)
+	// get cached nonWeeks
+	nonWeeks := s.cachedNonWeeks
+	// if 0 are found get from gRPC stub
+	if len(s.cachedNonWeeks) == 0 {
+		resWeeks, err := s.dbClient.GetNonWeeks()
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "could not get static weeks: %v", err)
+		}
+		nonWeeks = resWeeks
 	}
 
 	groups := InitialGroupState()
@@ -56,5 +72,17 @@ func NewGroupServer() *GroupsServer {
 		log.Fatal(err)
 	}
 	db := &GrpcClient{Context: clientCtx}
-	return &GroupsServer{dbClient: db}
+
+	nonWeeks, err := db.GetNonWeeks()
+	if err != nil {
+		// if couldn't get nonWeeks only return dbClient in order to
+		// cache NonWeeks in future calls (in case dbServer is currently unavailable)
+		return &GroupsServer{dbClient: db}
+	}
+
+	// if no error, return db client and cachedNonWeeks
+	return &GroupsServer{
+		dbClient:       db,
+		cachedNonWeeks: nonWeeks,
+	}
 }
