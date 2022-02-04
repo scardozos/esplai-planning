@@ -8,6 +8,8 @@ import (
 	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	wh "github.com/scardozos/ep-weekhandler/grpc/dates"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // TODO: IMPROVE DOCUMENTATION
@@ -19,22 +21,21 @@ type GrpcClient struct {
 	Context *GrpcClientContext
 }
 
-func (s *GrpcClient) AddStaticDate(req *DateTime) error {
-	c := s.Context.DatesClient
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	now := time.Now()
-	defer cancel()
-	log.Printf("Calling SetStaticWeek")
-	res, err := c.SetStaticWeek(ctx, &wh.SetStaticWeekRequest{StaticWeek: &wh.Date{Year: req.Year, Month: req.Month, Day: req.Day}})
-	then := time.Since(now)
-	if err != nil {
-		log.Printf("error calling SetStaticWeek: %v", err)
-		return err
+func NewGrpcClientContext(endpoint string) (*GrpcClientContext, error) {
+	opts := []grpc_retry.CallOption{
+		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(10 * time.Millisecond)),
+		grpc_retry.WithCodes(codes.Internal, codes.Unavailable),
 	}
-	log.Printf("Successfully added date %v - Took %v", res.SetWeek, then)
-	return nil
-}
+	datesConn, err := grpc.Dial(endpoint, grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(grpc_retry.UnaryClientInterceptor(opts...)),
+	)
+	if err != nil {
+		return nil, err
+	}
 
+	return &GrpcClientContext{DatesClient: wh.NewDatesClient(datesConn)}, nil
+
+}
 func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
 	c := s.Context.DatesClient
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -55,6 +56,24 @@ func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
 		log.Print("GetNonWeeks() returned 0 static weeks")
 	}
 	return retObj, nil
+}
+
+// Commented out as methods won't be used by esplai-planning, rather than esplain-planning-admin
+/*
+func (s *GrpcClient) AddStaticDate(req *DateTime) error {
+	c := s.Context.DatesClient
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	now := time.Now()
+	defer cancel()
+	log.Printf("Calling SetStaticWeek")
+	res, err := c.SetStaticWeek(ctx, &wh.SetStaticWeekRequest{StaticWeek: &wh.Date{Year: req.Year, Month: req.Month, Day: req.Day}})
+	then := time.Since(now)
+	if err != nil {
+		log.Printf("error calling SetStaticWeek: %v", err)
+		return err
+	}
+	log.Printf("Successfully added date %v - Took %v", res.SetWeek, then)
+	return nil
 }
 
 func (s *GrpcClient) IsNonWeek(req *DateTime) error {
@@ -92,3 +111,4 @@ func (s *GrpcClient) UnsetNonWeek(req *DateTime) error {
 	log.Printf("Successfully removed week %v-%v-%v.", w.Day, w.Month, w.Year)
 	return nil
 }
+*/
