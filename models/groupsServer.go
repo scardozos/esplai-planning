@@ -39,15 +39,16 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	requestedDate := DateTime{Year: date.Year, Month: date.Month, Day: date.Day}
 
 	// get cached nonWeeks
-	nonWeeks := s.cachedNonWeeks
 	// if 0 are found get from gRPC stub
 	if len(s.cachedNonWeeks) == 0 {
 		resWeeks, err := s.dbClient.GetNonWeeks()
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "could not get static weeks: %v", err)
 		}
-		nonWeeks = resWeeks
+		// caching upon user execution if initial request fails
+		s.cachedNonWeeks = resWeeks
 	}
+	nonWeeks := s.cachedNonWeeks
 
 	groups := InitialGroupState()
 
