@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package groups;
-option go_package = "github.com/scardozos/esplai-planning/grpc/groups/;groups";
+option go_package = "github.com/scardozos/esplai-planning/api/grpc/groups/;groups";
 
 service Groups {
     rpc GetGroupPlaces (DateRequest) returns (GroupsPlacesResponse);

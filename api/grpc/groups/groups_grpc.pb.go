@@ -97,5 +97,5 @@ var Groups_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/groups/groups.proto",
+	Metadata: "api/grpc/groups/groups.proto",
 }

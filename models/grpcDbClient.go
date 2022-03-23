@@ -58,8 +58,7 @@ func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
 	return retObj, nil
 }
 
-// Commented out as methods won't be used by esplai-planning, rather than esplain-planning-admin
-/*
+// Reverting change as I'll be using this as a global API
 func (s *GrpcClient) AddStaticDate(req *DateTime) error {
 	c := s.Context.DatesClient
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -111,4 +110,3 @@ func (s *GrpcClient) UnsetNonWeek(req *DateTime) error {
 	log.Printf("Successfully removed week %v-%v-%v.", w.Day, w.Month, w.Year)
 	return nil
 }
-*/

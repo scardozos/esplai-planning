@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/scardozos/esplai-weeks-db/api/weeksdb v0.0.0-00010101000000-000000000000
+	github.com/scardozos/esplai-weeks-db/api/weeksdb v0.0.0-20220323154021-e1dd11fffa6d
 	google.golang.org/grpc v1.44.0
 	google.golang.org/protobuf v1.27.1
 )
@@ -16,5 +16,3 @@ require (
 	golang.org/x/text v0.3.3 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
 )
-
-replace github.com/scardozos/esplai-weeks-db/api/weeksdb => /home/santi/go/src/github.com/scardozos/esplai-weeks-db/api/weeksdb

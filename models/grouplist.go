@@ -1,7 +1,7 @@
 package models
 
 import (
-	pb "github.com/scardozos/esplai-planning/grpc/groups"
+	pb "github.com/scardozos/esplai-planning/api/grpc/groups"
 )
 
 type GroupsList struct {
