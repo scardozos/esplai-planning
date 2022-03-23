@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	pb "github.com/scardozos/esplai-planning/grpc/groups"
+	pb "github.com/scardozos/esplai-planning/api/grpc/groups"
 	"github.com/scardozos/esplai-planning/models"
 	"google.golang.org/grpc"
 )
@@ -14,6 +14,7 @@ import (
 var (
 	grpcServerAddr = os.Getenv("GRPC_SERVER_CLIENT_ADDR_SELF")
 	grpcServerPort = os.Getenv("GRPC_SERVER_CLIENT_PORT_SELF")
+	weeksDbAddress = os.Getenv("WEEKSDB_SERVER_ADDR_AND_PORT")
 )
 
 func main() {
@@ -24,7 +25,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	groupServer := models.NewGroupServer()
+	groupServer := models.NewGroupServer(weeksDbAddress)
 	pb.RegisterGroupsServer(grpcServer, groupServer)
 
 	/* Testing:

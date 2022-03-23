@@ -6,7 +6,7 @@ import (
 	"time"
 
 	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
-	wh "github.com/scardozos/ep-weekhandler/grpc/dates"
+	wh "github.com/scardozos/esplai-weeks-db/api/weeksdb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -14,7 +14,7 @@ import (
 
 // TODO: IMPROVE DOCUMENTATION
 type GrpcClientContext struct {
-	DatesClient wh.DatesClient
+	DatesClient wh.WeeksDatabaseClient
 }
 
 type GrpcClient struct {
@@ -33,7 +33,7 @@ func NewGrpcClientContext(endpoint string) (*GrpcClientContext, error) {
 		return nil, err
 	}
 
-	return &GrpcClientContext{DatesClient: wh.NewDatesClient(datesConn)}, nil
+	return &GrpcClientContext{DatesClient: wh.NewWeeksDatabaseClient(datesConn)}, nil
 
 }
 func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
@@ -58,8 +58,7 @@ func (s *GrpcClient) GetNonWeeks(opts ...grpc.CallOption) ([]time.Time, error) {
 	return retObj, nil
 }
 
-// Commented out as methods won't be used by esplai-planning, rather than esplain-planning-admin
-/*
+// Reverting change as I'll be using this as a global API
 func (s *GrpcClient) AddStaticDate(req *DateTime) error {
 	c := s.Context.DatesClient
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -111,4 +110,3 @@ func (s *GrpcClient) UnsetNonWeek(req *DateTime) error {
 	log.Printf("Successfully removed week %v-%v-%v.", w.Day, w.Month, w.Year)
 	return nil
 }
-*/

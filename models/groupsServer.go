@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/scardozos/esplai-planning/grpc/groups"
+	pb "github.com/scardozos/esplai-planning/api/grpc/groups"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -66,9 +66,9 @@ func (s *GroupsServer) GetGroupPlaces(ctx context.Context, dateRequest *pb.DateR
 	}, nil
 }
 
-func NewGroupServer() *GroupsServer {
+func NewGroupServer(weeksDbAddress string) *GroupsServer {
 	// Initialize database client config containing static weeks
-	clientCtx, err := NewGrpcClientContext("localhost:9001")
+	clientCtx, err := NewGrpcClientContext(weeksDbAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
